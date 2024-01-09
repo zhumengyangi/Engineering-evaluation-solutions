@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+   <title>Food Truck Finder</title>
+</head>
+<body>
+    <h1>Food Truck Finder</h1>
+    <form>
+       <label for="locationid">Location ID:</label>
+       <input type="text" id="locationid" name="locationid">
+       <button type="submit">Find Food Trucks</button>
+    </form>
+    <div id="results"></div>
+   <script>
+        const form = document.querySelector("form");
+        const results = document.querySelector("#results");
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const locationid = form.elements["locationid"].value;
+
+            try {
+                const response = await fetch(`food_trucks.php?locationid=${locationid}`);
+                const data = await response.json();
+
+                if (data.error) {
+                    results.innerHTML = `<p>${data.error}</p>`;
+                } else {
+                    results.innerHTML = data.map((food_truck) => `<p>${food_truck.name} - ${food_truck.location}</p>`).join("");
+                }
+            } catch (error) {
+                results.innerHTML = `<p>An error occurred: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
